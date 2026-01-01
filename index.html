@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UVeye | Interactive Pricing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0056b3;
+            --secondary-dark: #1a1a1a;
+            --accent-green: #28a745;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--secondary-dark);
+        }
+
+        .calculator-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--secondary-dark);
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+
+        select:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .radio-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .radio-item.active {
+            border-color: var(--primary-blue);
+            background-color: #e7f1ff;
+        }
+
+        .radio-item input {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .result-container {
+            background-color: var(--secondary-dark);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .total-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .per-unit-subtext {
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <div class="header">
+        <h1>UVeye Pricing Calculator</h1>
+        <p>Configure your scanning solution and view instant monthly investment.</p>
+    </div>
+
+    <div class="config-grid">
+        <div class="input-group">
+            <label for="unitCount">Number of Units</label>
+            <select id="unitCount" onchange="calculateTotal()">
+                </select>
+        </div>
+
+        <div class="input-group">
+            <label>Monthly Scans Per Unit</label>
+            <div class="radio-options" id="tierOptions">
+                <label class="radio-item active">
+                    <input type="radio" name="scanTier" value="6300" checked onchange="calculateTotal()">
+                    Up to 1,500 scans
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="scanTier" value="6500" onchange="calculateTotal()">
+                    Up to 2,000 scans
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="scanTier" value="6700" onchange="calculateTotal()">
+                    Up to 2,500 scans
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="scanTier" value="6900" onchange="calculateTotal()">
+                    Up to 3,000 scans
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-container">
+        <div class="result-label">Estimated Total Monthly Investment</div>
+        <div class="total-price" id="displayTotal">$0.00</div>
+        <div class="per-unit-subtext" id="unitBreakdown">Based on 1 unit</div>
+    </div>
+
+    <div class="footer-note">
+        *Pricing is indicative and subject to final contract terms. Includes hardware, software, and 24/7 support.
+    </div>
+</div>
+
+<script>
+    // Initialize unit dropdown 1-10
+    const unitSelect = document.getElementById('unitCount');
+    for (let i = 1; i <= 10; i++) {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = i + (i === 1 ? ' Unit' : ' Units');
+        unitSelect.appendChild(opt);
+    }
+
+    function calculateTotal() {
+        // Get Selected Tier Price
+        const tiers = document.getElementsByName('scanTier');
+        let pricePerUnit = 0;
+        
+        tiers.forEach(tier => {
+            const parent = tier.parentElement;
+            if (tier.checked) {
+                pricePerUnit = parseInt(tier.value);
+                parent.classList.add('active');
+            } else {
+                parent.classList.remove('active');
+            }
+        });
+
+        // Get Number of Units
+        const units = parseInt(document.getElementById('unitCount').value);
+
+        // Calculate
+        const total = pricePerUnit * units;
+
+        // Update Display with Currency Formatting
+        document.getElementById('displayTotal').innerText = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+        }).format(total);
+
+        // Update Subtext
+        document.getElementById('unitBreakdown').innerText = `Based on ${units} unit(s) at $${pricePerUnit.toLocaleString()}/mo each`;
+    }
+
+    // Run calculation on load
+    calculateTotal();
+</script>
+
+</body>
+</html>
