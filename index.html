@@ -195,4 +195,155 @@
 <body>
 
 <div class="calculator-card">
-    <h1>
+    <h1>UVeye Pricing Calculator</h1>
+
+    <div class="row-split">
+        <div>
+            <label class="section-header">Monthly Scans Per Unit</label>
+            <div class="pick-grid">
+                <label>
+                    <input type="radio" name="scans" value="6300" checked onchange="calculate()">
+                    <div class="pick-option option-label">Up to 1,500 Scans</div>
+                </label>
+                <label>
+                    <input type="radio" name="scans" value="6500" onchange="calculate()">
+                    <div class="pick-option option-label">Up to 2,000 Scans</div>
+                </label>
+                <label>
+                    <input type="radio" name="scans" value="6700" onchange="calculate()">
+                    <div class="pick-option option-label">Up to 2,500 Scans</div>
+                </label>
+                <label>
+                    <input type="radio" name="scans" value="6900" onchange="calculate()">
+                    <div class="pick-option option-label">Up to 3,000 Scans</div>
+                </label>
+            </div>
+        </div>
+        <div>
+            <label class="section-header">Number of Units</label>
+            <select id="unitCount" onchange="calculate()">
+                </select>
+        </div>
+    </div>
+
+    <div class="subscription-callout">
+        <div class="label">System Subscription Without Add-ons</div>
+        <div class="value" id="subTotalDisplay">$0.00</div>
+    </div>
+
+    <div class="full-row">
+        <label class="section-header">Installation One Time Fee Per Lane</label>
+        <div class="pick-grid">
+            <label>
+                <input type="radio" name="install" value="10500" checked onchange="calculate()">
+                <div class="pick-option option-label">Standard (Above Ground) - $10,500</div>
+            </label>
+            <label>
+                <input type="radio" name="install" value="20000" onchange="calculate()">
+                <div class="pick-option option-label">Pro (Under Ground) - $20,000</div>
+            </label>
+        </div>
+    </div>
+
+    <div class="full-row">
+        <label class="section-header">UV360 Merchandising</label>
+        <div class="pick-grid">
+            <label>
+                <input type="radio" name="merch" value="0" checked onchange="calculate()">
+                <div class="pick-option option-label">Up to 50 Requests (Included)</div>
+            </label>
+            <label>
+                <input type="radio" name="merch" value="250" onchange="calculate()">
+                <div class="pick-option option-label">Up to 100 Requests - $250/mo</div>
+            </label>
+            <label>
+                <input type="radio" name="merch" value="500" onchange="calculate()">
+                <div class="pick-option option-label">Up to 200 Requests - $500/mo</div>
+            </label>
+            <label>
+                <input type="radio" name="merch" value="750" onchange="calculate()">
+                <div class="pick-option option-label">Up to 300 Requests - $750/mo</div>
+            </label>
+        </div>
+    </div>
+
+    <div class="full-row">
+        <label class="section-header">Apollo Optional Add-on</label>
+        <label style="max-width: 400px;">
+            <input type="checkbox" id="apollo" value="299" onchange="calculate()">
+            <div class="pick-option option-label">Apollo - Interior 360 & OBD Capture ($299/mo)</div>
+        </label>
+    </div>
+
+    <div class="totals-container">
+        <div class="total-item">
+            <span class="option-label">Total Aggregated Monthly Fees:</span>
+            <span class="option-label" id="finalMonthly">$0.00</span>
+        </div>
+        <div class="total-item">
+            <span class="option-label">One Time Installation Fee:</span>
+            <span class="option-label" id="finalOneTime">$0.00</span>
+        </div>
+        <div class="total-final">
+            <span>Estimated Total Monthly:</span>
+            <span id="grandTotal" style="color: var(--uveye-orange);">$0.00</span>
+        </div>
+        <div class="contract-term">Contract Term - 36 Months</div>
+    </div>
+
+    <div class="footer-info">
+        <h4>What's Included:</h4>
+        <ul class="footer-list">
+            <li>Specified number of scans per month, per system</li>
+            <li>Unlimited Users</li>
+            <li>Customer Success Manager</li>
+            <li>24/7 Cloud Access (Past 6 months)</li>
+            <li>System Maintenance</li>
+            <li>Software and Hardware upgrades</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Populate Units Dropdown
+    const select = document.getElementById('unitCount');
+    for (let i = 1; i <= 10; i++) {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = i + (i === 1 ? ' Unit' : ' Units');
+        select.appendChild(opt);
+    }
+
+    function calculate() {
+        // 1. Monthly Scan Price × Units
+        const scanPrice = parseFloat(document.querySelector('input[name="scans"]:checked').value);
+        const unitCount = parseInt(document.getElementById('unitCount').value);
+        const subTotalNoAddons = scanPrice * unitCount;
+        
+        document.getElementById('subTotalDisplay').innerText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(subTotalNoAddons);
+
+        // 2. Installation Fee (One-time)
+        const installPrice = parseFloat(document.querySelector('input[name="install"]:checked').value);
+        const totalInstall = installPrice * unitCount;
+
+        // 3. Merchandising
+        const merchPrice = parseFloat(document.querySelector('input[name="merch"]:checked').value);
+
+        // 4. Apollo Add-on
+        const apolloPrice = document.getElementById('apollo').checked ? 299 : 0;
+
+        // Aggregated Monthly
+        const totalMonthly = subTotalNoAddons + merchPrice + apolloPrice;
+
+        // Update UI
+        document.getElementById('finalMonthly').innerText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalMonthly) + " /mo";
+        document.getElementById('finalOneTime').innerText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalInstall);
+        document.getElementById('grandTotal').innerText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalMonthly);
+    }
+
+    // Initial run
+    calculate();
+</script>
+
+</body>
+</html>
