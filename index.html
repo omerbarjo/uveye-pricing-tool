@@ -1,220 +1,416 @@
-<div id="uveye-calculator-wrapper">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UVeye Pricing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        #uveye-calculator-wrapper {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            background: #ffffff;
-            border: 1px solid #e1e4e8;
-            border-radius: 12px;
-            color: #1a1a1a;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
+        :root {
+            --orange: #FF6B00;
+            --black: #1A1A1A;
+            --white: #FFFFFF;
+            --gray: #F4F4F4;
+            --border: #DDDDDD;
         }
-        .uveye-header {
-            background: #000;
-            color: #fff;
-            padding: 24px;
-            text-align: center;
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
-        .uveye-header h2 { margin: 0; font-size: 24px; letter-spacing: 0.5px; }
-        .uveye-content { padding: 30px; }
-        
-        /* Grid Layout */
-        .uveye-grid {
+
+        body {
+            background-color: var(--white);
+            color: var(--black);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            border-left: 8px solid var(--orange);
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid var(--black);
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header::after {
+            content: "";
+            flex-grow: 1;
+            height: 2px;
+            background: var(--black);
+            margin-left: 15px;
+        }
+
+        /* Top Row Grid */
+        .top-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 30px;
             margin-bottom: 30px;
         }
-        @media (max-width: 600px) { .uveye-grid { grid-template-columns: 1fr; } }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 20px; }
-        .form-group label {
+        label {
             display: block;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #444;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
         }
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            background-color: #f9f9f9;
-            transition: border-color 0.2s;
-        }
-        .form-group select:focus { border-color: #0056b3; outline: none; }
 
-        /* Toggle/Checkbox Styling */
+        select, .input-box {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--black);
+            font-size: 1.1rem;
+            font-weight: 600;
+            appearance: none;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 15px center;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--orange);
+        }
+
+        /* Monthly Total Callout */
+        .sub-total-banner {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sub-total-banner span {
+            color: var(--orange);
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        /* Radio Group Styling */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            border-color: var(--black);
+        }
+
+        .option-item.active {
+            border-color: var(--orange);
+            background-color: rgba(255, 107, 0, 0.05);
+        }
+
+        .option-item input {
+            margin-right: 15px;
+            accent-color: var(--orange);
+            width: 20px;
+            height: 20px;
+        }
+
+        .option-label {
+            flex-grow: 1;
+            font-weight: 600;
+        }
+
+        .option-price {
+            font-weight: 800;
+            color: var(--orange);
+        }
+
+        /* Checkbox Styling */
+        .addon-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--gray);
+            padding: 20px;
+            border: 2px dashed var(--black);
+        }
+
         .checkbox-container {
             display: flex;
             align-items: center;
-            background: #f1f5f9;
-            padding: 15px;
-            border-radius: 8px;
+            gap: 15px;
             cursor: pointer;
+            font-weight: 800;
+            font-size: 1.1rem;
         }
-        .checkbox-container input { width: auto; margin-right: 12px; transform: scale(1.2); }
 
-        /* Results Section */
-        .uveye-results {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 24px;
-            border: 1px solid #cbd5e1;
+        .checkbox-container input {
+            width: 25px;
+            height: 25px;
+            accent-color: var(--orange);
         }
-        .result-line {
+
+        /* Final Summary */
+        .final-summary {
+            margin-top: 50px;
+            border: 4px solid var(--black);
+            padding: 40px;
+            background: var(--white);
+        }
+
+        .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
         }
-        .result-line.total {
-            border-bottom: none;
-            padding-top: 15px;
+
+        .summary-total {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid var(--black);
+            display: flex;
+            justify-content: space-between;
             font-weight: 800;
-            font-size: 1.2em;
-            color: #000;
+            font-size: 2rem;
         }
-        .highlight-blue { color: #0056b3; font-weight: 700; }
 
-        /* Included Features */
-        .included-box {
-            margin-top: 30px;
-            padding: 20px;
-            background: #fff;
-            border-left: 4px solid #000;
-            font-size: 14px;
+        .total-label span {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #666;
         }
-        .included-box h4 { margin-top: 0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .included-box ul { margin: 0; padding-left: 20px; columns: 2; }
-        @media (max-width: 500px) { .included-box ul { columns: 1; } }
+
+        footer {
+            margin-top: 60px;
+            background: var(--gray);
+            padding: 40px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        footer h3 {
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-top: 0;
+        }
+
+        .orange-text { color: var(--orange); }
+
+        @media (max-width: 600px) {
+            .top-grid { grid-template-columns: 1fr; }
+        }
     </style>
+</head>
+<body>
 
-    <div class="uveye-header">
-        <h2>UVeye Solution Configurator</h2>
+<div class="container">
+    <header>
+        <h1>UVeye Pricing Calculator</h1>
+        <p>Configure your advanced vehicle scanning solution</p>
+    </header>
+
+    <div class="top-grid">
+        <div>
+            <label>MONTHLY SCANS PER UNIT</label>
+            <select id="scanTier" onchange="calculate()">
+                <option value="6300">Up to 1,500 scans — $6,300/mo</option>
+                <option value="6500">Up to 2,000 scans — $6,500/mo</option>
+                <option value="6700">Up to 2,500 scans — $6,700/mo</option>
+                <option value="6900">Up to 3,000 scans — $6,900/mo</option>
+            </select>
+        </div>
+        <div>
+            <label>NUMBER OF UNITS</label>
+            <select id="unitCount" onchange="calculate()">
+                </select>
+        </div>
     </div>
 
-    <div class="uveye-content">
-        <div class="uveye-grid">
-            <div class="form-group">
-                <label>Monthly Scans (Per Unit)</label>
-                <select id="scanVolume" onchange="calculateTotal()">
-                    <option value="6300">Up to 1,500 scans ($6,300)</option>
-                    <option value="6500">Up to 2,000 scans ($6,500)</option>
-                    <option value="6700">Up to 2,500 scans ($6,700)</option>
-                    <option value="6900">Up to 3,000 scans ($6,900)</option>
-                </select>
-            </div>
+    <div class="sub-total-banner">
+        CORE SYSTEM MONTHLY TOTAL: <span id="coreMonthlyDisplay">$0</span>
+    </div>
 
-            <div class="form-group">
-                <label>Number of Units / Lanes</label>
-                <select id="unitCount" onchange="calculateTotal()">
-                    </select>
-            </div>
+    <div class="section-header">Installation Type (One-Time Fee)</div>
+    <div class="options-group" id="installOptions">
+        <label class="option-item active">
+            <input type="radio" name="install" value="10500" checked onchange="calculate()">
+            <div class="option-label">Standard (Above Ground)</div>
+            <div class="option-price">$10,500 per lane</div>
+        </label>
+        <label class="option-item">
+            <input type="radio" name="install" value="20000" onchange="calculate()">
+            <div class="option-label">Pro (Under Ground)</div>
+            <div class="option-price">$20,000 per lane</div>
+        </label>
+    </div>
 
-            <div class="form-group">
-                <label>Installation Type (Per Lane)</label>
-                <select id="installType" onchange="calculateTotal()">
-                    <option value="10500">Standard (Above Ground) - $10,500</option>
-                    <option value="20000">Pro (Under Ground) - $20,000</option>
-                </select>
-            </div>
+    <br><br>
 
-            <div class="form-group">
-                <label>UV360 Merchandising</label>
-                <select id="merchTier" onchange="calculateTotal()">
-                    <option value="0">Up to 50 Requests (Included)</option>
-                    <option value="250">Up to 100 Requests ($250/mo)</option>
-                    <option value="500">Up to 200 Requests ($500/mo)</option>
-                    <option value="750">Up to 300 Requests ($750/mo)</option>
-                </select>
-            </div>
+    <div class="section-header">UV360 Merchandising</div>
+    <div class="options-group" id="merchOptions">
+        <label class="option-item active">
+            <input type="radio" name="merch" value="0" checked onchange="calculate()">
+            <div class="option-label">Up to 50 Monthly Requests</div>
+            <div class="option-price">INCLUDED</div>
+        </label>
+        <label class="option-item">
+            <input type="radio" name="merch" value="250" onchange="calculate()">
+            <div class="option-label">Up to 100 Monthly Requests</div>
+            <div class="option-price">$250/mo</div>
+        </label>
+        <label class="option-item">
+            <input type="radio" name="merch" value="500" onchange="calculate()">
+            <div class="option-label">Up to 200 Monthly Requests</div>
+            <div class="option-price">$500/mo</div>
+        </label>
+        <label class="option-item">
+            <input type="radio" name="merch" value="750" onchange="calculate()">
+            <div class="option-label">Up to 300 Monthly Requests</div>
+            <div class="option-price">$750/mo</div>
+        </label>
+    </div>
+
+    <br><br>
+
+    <div class="section-header">Optional Add-On</div>
+    <div class="addon-card">
+        <label class="checkbox-container">
+            <input type="checkbox" id="apolloAddon" onchange="calculate()">
+            Apollo - Interior 360 & OBD Capture
+        </label>
+        <div class="option-price">$299/mo</div>
+    </div>
+
+    <div class="final-summary">
+        <div class="section-header">Estimate Summary</div>
+        
+        <div class="summary-row">
+            <span>Recurring Monthly Subtotal</span>
+            <span id="summaryMonthly">$0</span>
+        </div>
+        <div class="summary-row">
+            <span>One-Time Installation Total</span>
+            <span id="summaryOneTime">$0</span>
         </div>
 
-        <div class="form-group">
-            <label class="checkbox-container">
-                <input type="checkbox" id="apolloAddon" onchange="calculateTotal()">
-                <span>Add Apollo (Interior 360 & OBD Capture) - $299/mo</span>
-            </label>
+        <div class="summary-total">
+            <div class="total-label">
+                TOTAL CONTRACT VALUE
+                <span>Estimated over 36 months</span>
+            </div>
+            <div id="summaryTotal" class="orange-text">$0</div>
         </div>
+    </div>
 
-        <div class="uveye-results">
-            <div class="result-line">
-                <span>Monthly Recurring Cost:</span>
-                <span id="displayMonthly" class="highlight-blue">$0</span>
-            </div>
-            <div class="result-line">
-                <span>One-Time Installation Fee:</span>
-                <span id="displayInstall">$0</span>
-            </div>
-            <div class="result-line">
-                <span>Total First Month Outlay:</span>
-                <span id="displayFirstMonth">$0</span>
-            </div>
-            <div class="result-line total">
-                <span>Total 36-Month Contract Value:</span>
-                <span id="displayTCV" class="highlight-blue">$0</span>
-            </div>
-        </div>
-
-        <div class="included-box">
-            <h4>What's Included</h4>
-            <ul>
-                <li>Specified monthly scans per unit</li>
+    <footer>
+        <h3>What's Included:</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>Term: 36 months</li>
+                <li>Specified scans per month/system</li>
                 <li>Unlimited Users</li>
                 <li>Dedicated Customer Success Manager</li>
-                <li>24/7 Cloud Access (6-mo history)</li>
-                <li>Full System Maintenance</li>
-                <li>Software & Hardware Upgrades</li>
+            </ul>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>24/7 Cloud Access (6 months history)</li>
+                <li>Complete System Maintenance</li>
+                <li>Regular Software Upgrades</li>
+                <li>Hardware Performance Upgrades</li>
             </ul>
         </div>
-    </div>
-
-    <script>
-        // Populate Unit Dropdown (1-10)
-        const unitSelect = document.getElementById('unitCount');
-        for (let i = 1; i <= 10; i++) {
-            let opt = document.createElement('option');
-            opt.value = i;
-            opt.innerHTML = i + (i === 1 ? ' Unit' : ' Units');
-            unitSelect.appendChild(opt);
-        }
-
-        function formatCurrency(num) {
-            return '$' + num.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
-        }
-
-        function calculateTotal() {
-            // Get inputs
-            const scanPrice = parseFloat(document.getElementById('scanVolume').value);
-            const units = parseInt(document.getElementById('unitCount').value);
-            const installFeePerUnit = parseFloat(document.getElementById('installType').value);
-            const merchPrice = parseFloat(document.getElementById('merchTier').value);
-            const isApollo = document.getElementById('apolloAddon').checked;
-            
-            const apolloPrice = isApollo ? 299 : 0;
-            const term = 36;
-
-            // Calculations
-            const monthlyBase = scanPrice * units;
-            const totalMonthlyRecurring = monthlyBase + merchPrice + apolloPrice;
-            const totalInstallation = installFeePerUnit * units;
-            const firstMonthTotal = totalMonthlyRecurring + totalInstallation;
-            const tcv = (totalMonthlyRecurring * term) + totalInstallation;
-
-            // Update UI
-            document.getElementById('displayMonthly').innerText = formatCurrency(totalMonthlyRecurring);
-            document.getElementById('displayInstall').innerText = formatCurrency(totalInstallation);
-            document.getElementById('displayFirstMonth').innerText = formatCurrency(firstMonthTotal);
-            document.getElementById('displayTCV').innerText = formatCurrency(tcv);
-        }
-
-        // Initialize on load
-        calculateTotal();
-    </script>
+    </footer>
 </div>
+
+<script>
+    // Initialize Unit Dropdown
+    const unitSelect = document.getElementById('unitCount');
+    for(let i=1; i<=10; i++) {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = i + (i === 1 ? ' Unit' : ' Units');
+        unitSelect.appendChild(opt);
+    }
+
+    function formatCurrency(num) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+        }).format(num);
+    }
+
+    function calculate() {
+        // 1. Inputs
+        const scanPrice = parseFloat(document.getElementById('scanTier').value);
+        const units = parseInt(document.getElementById('unitCount').value);
+        const installPrice = parseFloat(document.querySelector('input[name="install"]:checked').value);
+        const merchPrice = parseFloat(document.querySelector('input[name="merch"]:checked').value);
+        const hasApollo = document.getElementById('apolloAddon').checked;
+        const apolloPrice = hasApollo ? 299 : 0;
+
+        // 2. Calculations
+        const coreMonthlyTotal = scanPrice * units;
+        const totalMonthlyRecurring = coreMonthlyTotal + merchPrice + apolloPrice;
+        const totalOneTime = installPrice * units;
+        
+        // Total Contract Value (TCV) over 36 months as requested in footer info
+        const totalContractValue = (totalMonthlyRecurring * 36) + totalOneTime;
+
+        // 3. UI Updates
+        document.getElementById('coreMonthlyDisplay').innerText = formatCurrency(coreMonthlyTotal);
+        document.getElementById('summaryMonthly').innerText = formatCurrency(totalMonthlyRecurring) + "/mo";
+        document.getElementById('summaryOneTime').innerText = formatCurrency(totalOneTime);
+        document.getElementById('summaryTotal').innerText = formatCurrency(totalContractValue);
+
+        // Visual feedback for selected items
+        document.querySelectorAll('.option-item').forEach(item => {
+            const radio = item.querySelector('input');
+            if(radio.checked) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    // Initial calculation
+    calculate();
+</script>
+
+</body>
+</html>
