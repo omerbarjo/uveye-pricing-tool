@@ -4,156 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UVeye Pricing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: white;
-            color: black;
+            background-color: #ffffff;
+            color: #000000;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 40px 20px;
+            max-width: 960px;
+            margin: 0 auto;
         }
-
-        .calculator {
-            max-width: 800px;
-            width: 100%;
-            background-color: white;
-            padding: 40px;
-            border: 2px solid orange;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
         h1 {
             text-align: center;
-            color: orange;
+            color: #FF6200; /* UVeye orange */
             font-size: 36px;
-            margin-bottom: 40px;
-        }
-
-        .section-header {
-            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 10px;
-            color: black;
+            margin-bottom: 60px;
         }
-
-        .options {
-            font-size: 16px;
-            margin-bottom: 20px;
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
-
-        select, input[type="checkbox"] {
-            font-size: 16px;
-            padding: 10px;
-            border: 1px solid black;
-            border-radius: 5px;
-            background-color: white;
-            color: black;
-            cursor: pointer;
-        }
-
-        select:focus, input[type="checkbox"]:focus {
-            outline: none;
-            border-color: orange;
-        }
-
         .row {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
+            gap: 60px;
+            margin-bottom: 50px;
+            align-items: flex-start;
         }
-
-        .half {
-            width: 48%;
+        .section {
+            flex: 1;
+            margin-bottom: 50px;
         }
-
-        .full {
-            width: 100%;
-        }
-
-        .total-section {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #f8f8f8;
-            border-radius: 10px;
-        }
-
-        .monthly-total {
-            font-size: 24px;
+        .section-header {
+            font-size: 28px;
             font-weight: 600;
-            color: orange;
+            color: #000000;
+            margin-bottom: 16px;
         }
-
-        .one-time-fee {
-            font-size: 20px;
-            font-weight: 600;
-            color: black;
-            margin-top: 10px;
-        }
-
-        .contract-term {
+        select, label {
             font-size: 18px;
-            margin-top: 20px;
-            text-align: center;
+            font-weight: 500;
         }
-
-        .footer {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #f8f8f8;
-            border-radius: 10px;
-            font-size: 14px;
-            color: black;
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            background-color: #ffffff;
+            cursor: pointer;
         }
-
-        .footer h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .apollo-section {
+        .checkbox-row {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 12px;
         }
-
-        .apollo-section label {
-            font-size: 16px;
-            margin-left: 10px;
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            accent-color: #FF6200;
+            cursor: pointer;
         }
-
-        .subscription-total {
-            font-size: 20px;
-            font-weight: 600;
-            color: black;
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="calculator">
-        <h1>UVeye Pricing Calculator</h1>
-
-        <div class="row">
-            <div class="half">
-                <div class="section-header">Monthly Scans Per Unit</div>
-                <select id="scans" class="options full">
-                    <option value="6300">Up to 1,500 scans = $6,300/month</option>
-                    <option value="6500">Up to 2,000 scans = $6,500/month</option>
-                    <option value="6700">Up to 2,500 scans = $6,700/month</option>
-                    <option value="6900">Up to 3,000 scans = $6,900/month</option>
-                </select>
-            </div>
-            <div class="half">
-                <div class="section-header">Number of Units</div>
-                <select id="units" class="options full">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4
+        .price-display {
+            margin: 60px 0;
+            padding: 30px;
+            background-color: #f5f5f5;
+            border-radius: 12px;
+            border-left: 6px
