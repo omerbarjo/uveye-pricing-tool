@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UVeye | Interactive Pricing Calculator</title>
+    <title>UVeye | Solution Configurator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #0056b3;
-            --secondary-dark: #1a1a1a;
-            --accent-green: #28a745;
-            --light-gray: #f8f9fa;
-            --border-color: #dee2e6;
+            --uveye-blue: #00A3E0; /* UVeye Brand Blue */
+            --dark-bg: #0f1113;
+            --card-bg: #1a1d21;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --border: #2d3136;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 40px 20px;
             margin: 0;
-            color: var(--secondary-dark);
         }
 
         .calculator-card {
-            background: #ffffff;
+            background: var(--card-bg);
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .header {
@@ -39,29 +40,24 @@
             margin-bottom: 40px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            color: var(--secondary-dark);
+        /* Logo Placeholder - Matches UVeye Pro style */
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--text-main);
+            margin-bottom: 10px;
         }
+        .logo span { color: var(--uveye-blue); }
 
-        .header p {
-            color: #666;
-            margin-top: 10px;
-        }
-
-        .config-grid {
+        .config-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
-        @media (max-width: 600px) {
-            .config-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .full-width { grid-column: 1 / -1; }
 
         .input-group {
             display: flex;
@@ -69,88 +65,58 @@
         }
 
         label {
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 14px;
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--uveye-blue);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
         }
 
-        select {
+        select, .checkbox-card {
+            background: #25282c;
+            border: 1px solid var(--border);
+            color: white;
             padding: 12px;
-            border: 2px solid var(--border-color);
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
             cursor: pointer;
         }
 
-        select:focus {
-            border-color: var(--primary-blue);
-        }
+        select:focus { border-color: var(--uveye-blue); }
 
-        .radio-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .radio-item {
+        .checkbox-container {
             display: flex;
             align-items: center;
-            padding: 12px;
-            border: 2px solid var(--border-color);
+            gap: 12px;
+            padding: 15px;
+            background: #25282c;
             border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .radio-item:hover {
-            background-color: var(--light-gray);
-        }
-
-        .radio-item.active {
-            border-color: var(--primary-blue);
-            background-color: #e7f1ff;
-        }
-
-        .radio-item input {
-            margin-right: 12px;
+            border: 1px solid var(--border);
             cursor: pointer;
         }
 
-        .result-container {
-            background-color: var(--secondary-dark);
-            color: white;
+        /* Results Area */
+        .summary-box {
+            background: linear-gradient(145deg, #1e2227, #131518);
+            border-radius: 12px;
             padding: 30px;
-            border-radius: 10px;
-            text-align: center;
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            border: 1px solid var(--uveye-blue);
         }
 
-        .result-label {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 8px;
-        }
+        .price-block { text-align: center; }
+        .price-label { font-size: 13px; color: var(--text-dim); margin-bottom: 5px; }
+        .price-value { font-size: 36px; font-weight: 700; }
+        .one-time { color: #f8f9fa; }
+        .monthly { color: var(--uveye-blue); }
 
-        .total-price {
-            font-size: 48px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .per-unit-subtext {
-            font-size: 14px;
-            margin-top: 10px;
-            opacity: 0.7;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-            margin-top: 25px;
+        @media (max-width: 600px) {
+            .config-section, .summary-box { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -158,95 +124,113 @@
 
 <div class="calculator-card">
     <div class="header">
-        <h1>UVeye Pricing Calculator</h1>
-        <p>Configure your scanning solution and view instant monthly investment.</p>
+        <div class="logo">UV<span>EYE</span></div>
+        <p style="color: var(--text-dim)">Advanced Vehicle Inspection Systems</p>
     </div>
 
-    <div class="config-grid">
+    <div class="config-section">
         <div class="input-group">
-            <label for="unitCount">Number of Units</label>
-            <select id="unitCount" onchange="calculateTotal()">
+            <label>Number of Units</label>
+            <select id="unitCount" onchange="calculate()">
                 </select>
         </div>
 
         <div class="input-group">
-            <label>Monthly Scans Per Unit</label>
-            <div class="radio-options" id="tierOptions">
-                <label class="radio-item active">
-                    <input type="radio" name="scanTier" value="6300" checked onchange="calculateTotal()">
-                    Up to 1,500 scans
-                </label>
-                <label class="radio-item">
-                    <input type="radio" name="scanTier" value="6500" onchange="calculateTotal()">
-                    Up to 2,000 scans
-                </label>
-                <label class="radio-item">
-                    <input type="radio" name="scanTier" value="6700" onchange="calculateTotal()">
-                    Up to 2,500 scans
-                </label>
-                <label class="radio-item">
-                    <input type="radio" name="scanTier" value="6900" onchange="calculateTotal()">
-                    Up to 3,000 scans
-                </label>
+            <label>Installation (One-Time Fee)</label>
+            <select id="installType" onchange="calculate()">
+                <option value="10500">Standard (Above Ground) - $10,500</option>
+                <option value="20000">Pro (Under Ground) - $20,000</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Monthly Scan Volume Per Unit</label>
+            <select id="scanTier" onchange="calculate()">
+                <option value="6300">Up to 1,500 scans ($6,300/mo)</option>
+                <option value="6500">Up to 2,000 scans ($6,500/mo)</option>
+                <option value="6700">Up to 2,500 scans ($6,700/mo)</option>
+                <option value="6900">Up to 3,000 scans ($6,900/mo)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>UV360 (Merchandising)</label>
+            <select id="uv360" onchange="calculate()">
+                <option value="0">Up to 50 Requests - Included</option>
+                <option value="250">Up to 100 Requests - $250/mo</option>
+                <option value="500">Up to 200 Requests - $500/mo</option>
+                <option value="750">Up to 300 Requests - $750/mo</option>
+            </select>
+        </div>
+
+        <div class="input-group full-width">
+            <label>Optional Add-On</label>
+            <div class="checkbox-container" onclick="toggleApollo()">
+                <input type="checkbox" id="apolloAddon" onchange="calculate()">
+                <span>Apollo - Interior 360 & OBD Capture (+$299/mo)</span>
             </div>
         </div>
     </div>
 
-    <div class="result-container">
-        <div class="result-label">Estimated Total Monthly Investment</div>
-        <div class="total-price" id="displayTotal">$0.00</div>
-        <div class="per-unit-subtext" id="unitBreakdown">Based on 1 unit</div>
+    <div class="summary-box">
+        <div class="price-block" style="border-right: 1px solid #333">
+            <div class="price-label">One-Time Installation</div>
+            <div class="price-value one-time" id="totalInstall">$0</div>
+        </div>
+        <div class="price-block">
+            <div class="price-label">Total Monthly Subscription</div>
+            <div class="price-value monthly" id="totalMonthly">$0</div>
+        </div>
     </div>
 
-    <div class="footer-note">
-        *Pricing is indicative and subject to final contract terms. Includes hardware, software, and 24/7 support.
-    </div>
+    <p style="text-align:center; font-size:11px; color:var(--text-dim); margin-top:20px;">
+        *All prices are in USD. Monthly subscription includes hardware maintenance and cloud software.
+    </p>
 </div>
 
 <script>
-    // Initialize unit dropdown 1-10
+    // Populate Units 1-10
     const unitSelect = document.getElementById('unitCount');
     for (let i = 1; i <= 10; i++) {
         let opt = document.createElement('option');
         opt.value = i;
-        opt.innerHTML = i + (i === 1 ? ' Unit' : ' Units');
+        opt.innerHTML = i + (i === 1 ? ' Scanning Lane' : ' Scanning Lanes');
         unitSelect.appendChild(opt);
     }
 
-    function calculateTotal() {
-        // Get Selected Tier Price
-        const tiers = document.getElementsByName('scanTier');
-        let pricePerUnit = 0;
-        
-        tiers.forEach(tier => {
-            const parent = tier.parentElement;
-            if (tier.checked) {
-                pricePerUnit = parseInt(tier.value);
-                parent.classList.add('active');
-            } else {
-                parent.classList.remove('active');
-            }
-        });
+    function toggleApollo() {
+        const cb = document.getElementById('apolloAddon');
+        cb.checked = !cb.checked;
+        calculate();
+    }
 
-        // Get Number of Units
+    function calculate() {
         const units = parseInt(document.getElementById('unitCount').value);
+        
+        // One-time Calculation
+        const installRate = parseInt(document.getElementById('installType').value);
+        const totalInstall = installRate * units;
 
-        // Calculate
-        const total = pricePerUnit * units;
+        // Monthly Calculation
+        const scanRate = parseInt(document.getElementById('scanTier').value);
+        const uv360Rate = parseInt(document.getElementById('uv360').value);
+        const apolloRate = document.getElementById('apolloAddon').checked ? 299 : 0;
 
-        // Update Display with Currency Formatting
-        document.getElementById('displayTotal').innerText = new Intl.NumberFormat('en-US', {
+        const totalMonthly = (scanRate + uv360Rate + apolloRate) * units;
+
+        // Display
+        const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             maximumFractionDigits: 0
-        }).format(total);
+        });
 
-        // Update Subtext
-        document.getElementById('unitBreakdown').innerText = `Based on ${units} unit(s) at $${pricePerUnit.toLocaleString()}/mo each`;
+        document.getElementById('totalInstall').innerText = formatter.format(totalInstall);
+        document.getElementById('totalMonthly').innerText = formatter.format(totalMonthly);
     }
 
-    // Run calculation on load
-    calculateTotal();
+    // Run on load
+    calculate();
 </script>
 
 </body>
