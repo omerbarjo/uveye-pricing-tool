@@ -231,19 +231,19 @@
                     <div class="section-header">Monthly Scans Per Unit</div>
                     <div class="option-group">
                         <label class="radio-option selected">
-                            <input type="radio" name="scans" value="6300" checked>
+                            <input type="radio" name="scans" value="6300" data-label="Up to 1,500 scans" checked>
                             Up to 1,500 scans - $6,300/month
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="scans" value="6500">
+                            <input type="radio" name="scans" value="6500" data-label="Up to 2,000 scans">
                             Up to 2,000 scans - $6,500/month
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="scans" value="6700">
+                            <input type="radio" name="scans" value="6700" data-label="Up to 2,500 scans">
                             Up to 2,500 scans - $6,700/month
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="scans" value="6900">
+                            <input type="radio" name="scans" value="6900" data-label="Up to 3,000 scans">
                             Up to 3,000 scans - $6,900/month
                         </label>
                     </div>
@@ -295,19 +295,19 @@
             <div class="section-header">UV360 (Merchandising)</div>
             <div class="option-group">
                 <label class="radio-option selected">
-                    <input type="radio" name="merchandising" value="0" checked>
+                    <input type="radio" name="merchandising" value="0" data-label="Up to 50 requests" checked>
                     Up to 50 Monthly Requests (Included)
                 </label>
                 <label class="radio-option">
-                    <input type="radio" name="merchandising" value="250">
+                    <input type="radio" name="merchandising" value="250" data-label="Up to 100 requests">
                     Up to 100 Monthly Requests - $250/month
                 </label>
                 <label class="radio-option">
-                    <input type="radio" name="merchandising" value="500">
+                    <input type="radio" name="merchandising" value="500" data-label="Up to 200 requests">
                     Up to 200 Monthly Requests - $500/month
                 </label>
                 <label class="radio-option">
-                    <input type="radio" name="merchandising" value="750">
+                    <input type="radio" name="merchandising" value="750" data-label="Up to 300 requests">
                     Up to 300 Monthly Requests - $750/month
                 </label>
             </div>
@@ -327,11 +327,11 @@
 
         <div class="cost-summary">
             <div class="cost-row">
-                <span>Monthly System Cost:</span>
+                <span id="systemCostLabel">Monthly System Cost (Up to 1,500 scans):</span>
                 <span id="systemCost">$6,300</span>
             </div>
             <div class="cost-row">
-                <span>UV360 Merchandising:</span>
+                <span id="merchLabel">UV360 Merchandising (Up to 50 requests):</span>
                 <span id="merchCost">Included</span>
             </div>
             <div class="cost-row">
@@ -381,10 +381,14 @@
 
         function updatePricing() {
             // Get selected values
-            const scanPrice = parseInt(document.querySelector('input[name="scans"]:checked').value);
+            const scanElement = document.querySelector('input[name="scans"]:checked');
+            const scanPrice = parseInt(scanElement.value);
+            const scanLabel = scanElement.getAttribute('data-label');
             const units = parseInt(document.getElementById('units').value);
             const installation = parseInt(document.querySelector('input[name="installation"]:checked').value);
-            const merchandising = parseInt(document.querySelector('input[name="merchandising"]:checked').value);
+            const merchElement = document.querySelector('input[name="merchandising"]:checked');
+            const merchandising = parseInt(merchElement.value);
+            const merchLabel = merchElement.getAttribute('data-label');
             const apollo = document.getElementById('apollo').checked ? 299 : 0;
             const kiosk = document.getElementById('kiosk').checked ? 100 : 0;
             const kioskOnetime = document.getElementById('kiosk').checked ? 1000 * units : 0;
@@ -394,7 +398,9 @@
             const monthlyTotal = systemCost + merchandising + apollo + kiosk;
             const installTotal = (installation * units) + kioskOnetime;
 
-            // Update display
+            // Update display with labels
+            document.getElementById('systemCostLabel').textContent = `Monthly System Cost (${scanLabel}):`;
+            document.getElementById('merchLabel').textContent = `UV360 Merchandising (${merchLabel}):`;
             document.getElementById('systemCost').textContent = formatCurrency(systemCost);
             document.getElementById('merchCost').textContent = merchandising === 0 ? 'Included' : formatCurrency(merchandising);
             document.getElementById('apolloCost').textContent = formatCurrency(apollo);
@@ -431,6 +437,12 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
+            // Get current selections
+            const scanElement = document.querySelector('input[name="scans"]:checked');
+            const scanLabel = scanElement.getAttribute('data-label');
+            const merchElement = document.querySelector('input[name="merchandising"]:checked');
+            const merchLabel = merchElement.getAttribute('data-label');
+            
             // Add title
             doc.setFontSize(24);
             doc.setTextColor(255, 102, 0);
@@ -447,14 +459,14 @@
             
             // Monthly System Cost
             doc.setFont(undefined, 'bold');
-            doc.text('Monthly System Cost:', 20, yPos);
+            doc.text(`Monthly System Cost (${scanLabel}):`, 20, yPos);
             doc.setFont(undefined, 'normal');
             doc.text(document.getElementById('systemCost').textContent, 180, yPos, { align: 'right' });
             
             // UV360 Merchandising
             yPos += 10;
             doc.setFont(undefined, 'bold');
-            doc.text('UV360 Merchandising:', 20, yPos);
+            doc.text(`UV360 Merchandising (${merchLabel}):`, 20, yPos);
             doc.setFont(undefined, 'normal');
             doc.text(document.getElementById('merchCost').textContent, 180, yPos, { align: 'right' });
             
