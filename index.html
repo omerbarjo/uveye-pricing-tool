@@ -334,11 +334,11 @@
                 <span id="merchLabel">UV360 Merchandising (Up to 50 requests):</span>
                 <span id="merchCost">Included</span>
             </div>
-            <div class="cost-row">
+            <div class="cost-row" id="apolloRow" style="display: none;">
                 <span>Apollo Add-On:</span>
                 <span id="apolloCost">$0</span>
             </div>
-            <div class="cost-row">
+            <div class="cost-row" id="kioskRow" style="display: none;">
                 <span>Kiosk Add-On:</span>
                 <span id="kioskCost">$0</span>
             </div>
@@ -408,6 +408,10 @@
             document.getElementById('monthlyTotal').textContent = formatCurrency(monthlyTotal);
             document.getElementById('installTotal').textContent = formatCurrency(installTotal);
             
+            // Show/hide add-on rows
+            document.getElementById('apolloRow').style.display = apollo > 0 ? 'flex' : 'none';
+            document.getElementById('kioskRow').style.display = kiosk > 0 ? 'flex' : 'none';
+            
             // Update installation label based on kiosk selection
             document.getElementById('installLabel').textContent = document.getElementById('kiosk').checked 
                 ? 'One-Time Installation+Kiosk:' 
@@ -470,19 +474,23 @@
             doc.setFont(undefined, 'normal');
             doc.text(document.getElementById('merchCost').textContent, 180, yPos, { align: 'right' });
             
-            // Apollo Add-On
-            yPos += 7;
-            doc.setFont(undefined, 'bold');
-            doc.text('Apollo Add-On:', 20, yPos);
-            doc.setFont(undefined, 'normal');
-            doc.text(document.getElementById('apolloCost').textContent, 180, yPos, { align: 'right' });
+            // Apollo Add-On (only if selected)
+            if (document.getElementById('apollo').checked) {
+                yPos += 7;
+                doc.setFont(undefined, 'bold');
+                doc.text('Apollo Add-On:', 20, yPos);
+                doc.setFont(undefined, 'normal');
+                doc.text(document.getElementById('apolloCost').textContent, 180, yPos, { align: 'right' });
+            }
             
-            // Kiosk Add-On
-            yPos += 7;
-            doc.setFont(undefined, 'bold');
-            doc.text('Kiosk Add-On:', 20, yPos);
-            doc.setFont(undefined, 'normal');
-            doc.text(document.getElementById('kioskCost').textContent, 180, yPos, { align: 'right' });
+            // Kiosk Add-On (only if selected)
+            if (document.getElementById('kiosk').checked) {
+                yPos += 7;
+                doc.setFont(undefined, 'bold');
+                doc.text('Kiosk Add-On:', 20, yPos);
+                doc.setFont(undefined, 'normal');
+                doc.text(document.getElementById('kioskCost').textContent, 180, yPos, { align: 'right' });
+            }
             
             // Total Monthly
             yPos += 15;
