@@ -147,6 +147,31 @@
             border-radius: 6px;
         }
 
+        .download-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            color: white;
+            border: 3px solid #ff6600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .download-btn:hover {
+            background: #ff6600;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
         .footer {
             background: #f9f9f9;
             border: 2px solid #000000;
@@ -237,6 +262,16 @@
                         <option value="8">8 Units</option>
                         <option value="9">9 Units</option>
                         <option value="10">10 Units</option>
+                        <option value="11">11 Units</option>
+                        <option value="12">12 Units</option>
+                        <option value="13">13 Units</option>
+                        <option value="14">14 Units</option>
+                        <option value="15">15 Units</option>
+                        <option value="16">16 Units</option>
+                        <option value="17">17 Units</option>
+                        <option value="18">18 Units</option>
+                        <option value="19">19 Units</option>
+                        <option value="20">20 Units</option>
                     </select>
                 </div>
             </div>
@@ -321,6 +356,10 @@
             Contract Term: 36 Months
         </div>
 
+        <button class="download-btn" id="downloadBtn" onclick="downloadQuote()">
+            📥 Download Quote PDF
+        </button>
+
         <div class="footer">
             <h3>What's Included:</h3>
             <ul>
@@ -334,6 +373,7 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         function formatCurrency(amount) {
             return '$' + amount.toLocaleString();
@@ -386,6 +426,101 @@
 
         // Initialize
         updatePricing();
+
+        function downloadQuote() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(24);
+            doc.setTextColor(255, 102, 0);
+            doc.text('UVeye Pricing Quote', 105, 20, { align: 'center' });
+            
+            // Add date
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            const today = new Date().toLocaleDateString();
+            doc.text(`Date: ${today}`, 20, 35);
+            
+            let yPos = 50;
+            doc.setFontSize(12);
+            
+            // Monthly System Cost
+            doc.setFont(undefined, 'bold');
+            doc.text('Monthly System Cost:', 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.text(document.getElementById('systemCost').textContent, 180, yPos, { align: 'right' });
+            
+            // UV360 Merchandising
+            yPos += 10;
+            doc.setFont(undefined, 'bold');
+            doc.text('UV360 Merchandising:', 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.text(document.getElementById('merchCost').textContent, 180, yPos, { align: 'right' });
+            
+            // Apollo Add-On
+            yPos += 7;
+            doc.setFont(undefined, 'bold');
+            doc.text('Apollo Add-On:', 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.text(document.getElementById('apolloCost').textContent, 180, yPos, { align: 'right' });
+            
+            // Kiosk Add-On
+            yPos += 7;
+            doc.setFont(undefined, 'bold');
+            doc.text('Kiosk Add-On:', 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.text(document.getElementById('kioskCost').textContent, 180, yPos, { align: 'right' });
+            
+            // Total Monthly
+            yPos += 15;
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(255, 102, 0);
+            doc.text('Total Monthly:', 20, yPos);
+            doc.text(document.getElementById('monthlyTotal').textContent, 180, yPos, { align: 'right' });
+            
+            // One-Time Installation
+            yPos += 15;
+            doc.setFontSize(14);
+            doc.setTextColor(255, 102, 0);
+            doc.text(document.getElementById('installLabel').textContent, 20, yPos);
+            doc.text(document.getElementById('installTotal').textContent, 180, yPos, { align: 'right' });
+            
+            // Contract Term
+            yPos += 20;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Contract Term: 36 Months', 105, yPos, { align: 'center' });
+            
+            // What's Included
+            yPos += 15;
+            doc.setFontSize(14);
+            doc.setTextColor(255, 102, 0);
+            doc.text("What's Included:", 20, yPos);
+            
+            yPos += 10;
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont(undefined, 'normal');
+            const included = [
+                'Specified number of scans and UV360 requests per month',
+                'Unlimited Users',
+                'Customer Success Manager',
+                '24/7 Cloud Access to past 6 months of scans',
+                'System Maintenance',
+                'Software and Hardware upgrades'
+            ];
+            
+            included.forEach(item => {
+                doc.text('✓ ' + item, 25, yPos);
+                yPos += 6;
+            });
+            
+            // Save PDF
+            doc.save('UVeye-Quote.pdf');
+        }
     </script>
 </body>
 </html>
