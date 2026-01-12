@@ -446,6 +446,7 @@
             const scanLabel = scanElement.getAttribute('data-label');
             const merchElement = document.querySelector('input[name="merchandising"]:checked');
             const merchLabel = merchElement.getAttribute('data-label');
+            const units = parseInt(document.getElementById('units').value);
             
             // Add title
             doc.setFontSize(24);
@@ -461,9 +462,17 @@
             let yPos = 50;
             doc.setFontSize(12);
             
-            // Monthly System Cost
+            // Units
             doc.setFont(undefined, 'bold');
-            doc.text(`Monthly System Cost (${scanLabel}):`, 20, yPos);
+            doc.text('Units:', 20, yPos);
+            doc.setFont(undefined, 'normal');
+            doc.text(units.toString(), 180, yPos, { align: 'right' });
+            
+            // Monthly System Cost
+            yPos += 10;
+            doc.setFont(undefined, 'bold');
+            const scanLabelWithUnit = units > 1 ? `${scanLabel} Per Unit` : scanLabel;
+            doc.text(`Monthly System Cost (${scanLabelWithUnit}):`, 20, yPos);
             doc.setFont(undefined, 'normal');
             doc.text(document.getElementById('systemCost').textContent, 180, yPos, { align: 'right' });
             
